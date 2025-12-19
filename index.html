@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Tabel Distribusi Frekuensi Nilai Mahasiswa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        input, button {
+            padding: 6px;
+            margin: 5px 0;
+        }
+        table {
+            border-collapse: collapse;
+            margin-top: 15px;
+            width: 400px;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Tabel Distribusi Frekuensi Nilai Mahasiswa</h2>
+
+<label>Masukkan jumlah data (minimal 30):</label><br>
+<input type="number" id="jumlahData">
+<button onclick="buatInput()">OK</button>
+
+<div id="inputNilai"></div>
+<div id="hasil"></div>
+
+<script>
+function buatInput() {
+    const n = parseInt(document.getElementById("jumlahData").value);
+    const div = document.getElementById("inputNilai");
+    div.innerHTML = "";
+
+    if (n < 30) {
+        alert("Jumlah data harus minimal 30!");
+        return;
+    }
+
+    for (let i = 0; i < n; i++) {
+        div.innerHTML += `
+            Data ke-${i + 1} :
+            <input type="number" class="nilai"><br>
+        `;
+    }
+
+    div.innerHTML += `<button onclick="hitung()">Hitung</button>`;
+}
+
+function hitung() {
+    const nilai = document.querySelectorAll(".nilai");
+    let data = [];
+
+    nilai.forEach(n => data.push(parseInt(n.value)));
+
+    let min = data[0];
+    let max = data[0];
+
+    for (let i = 1; i < data.length; i++) {
+        if (data[i] < min) min = data[i];
+        if (data[i] > max) max = data[i];
+    }
+
+    const jumlahKelas = 6;
+    const rentang = max - min;
+    const interval = Math.floor(rentang / jumlahKelas) + 1;
+
+    let html = `
+        <h3>Hasil Tabel Distribusi Frekuensi</h3>
+        <table>
+            <tr>
+                <th>Interval</th>
+                <th>Frekuensi</th>
+            </tr>
+    `;
+
+    for (let i = 0; i < jumlahKelas; i++) {
+        let batasBawah = min + i * interval;
+        let batasAtas = batasBawah + interval - 1;
+        let frekuensi = 0;
+
+        for (let j = 0; j < data.length; j++) {
+            if (data[j] >= batasBawah && data[j] <= batasAtas) {
+                frekuensi++;
+            }
+        }
+
+        html += `
+            <tr>
+                <td>${batasBawah} - ${batasAtas}</td>
+                <td>${frekuensi}</td>
+            </tr>
+        `;
+    }
+
+    html += `</table>`;
+    document.getElementById("hasil").innerHTML = html;
+}
+</script>
+
+</body>
+</html>
